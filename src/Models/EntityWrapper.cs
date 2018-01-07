@@ -1,3 +1,4 @@
+using System;
 using PoeHUD.Controllers;
 using PoeHUD.Models.Interfaces;
 using PoeHUD.Poe;
@@ -56,7 +57,18 @@ namespace PoeHUD.Models
                 return new Vector3(p.X, p.Y, GetComponent<Render>().Z);
             }
         }
-    
+
+        public int Distance
+        {
+            get
+            {
+                var p = GetComponent<Positioned>();
+                var player = GameController.Instance.Player;
+                var distance = Math.Sqrt(Math.Pow(player.Pos.X - p.X, 2) + Math.Pow(player.Pos.Y - p.Y, 2));
+                return (int)distance;
+            }
+        }
+
         public T GetComponent<T>() where T : Component, new()
         {
             string name = typeof(T).Name;

@@ -1,6 +1,8 @@
 using System;
 using PoeHUD.Models.Interfaces;
 using System.Collections.Generic;
+using PoeHUD.Controllers;
+using PoeHUD.Poe.Components;
 
 namespace PoeHUD.Poe
 {
@@ -13,6 +15,8 @@ namespace PoeHUD.Poe
 
         public long Id => (long)M.ReadInt(Address + 0x40) << 32 ^ Address;
         public int InventoryId => M.ReadInt(Address + 0x58);
+
+        public int Distance => GetDistance();
 
         /// <summary>
         /// 0x65004D = "Me"(4 bytes) from word Metadata
@@ -47,6 +51,14 @@ namespace PoeHUD.Poe
         {
             long addr;
             return HasComponent<T>(out addr) ? ReadObject<T>(ComponentList + M.ReadInt(addr + 0x18) * 8) : GetObject<T>(0);
+        }
+
+        private int GetDistance()
+        {
+            var p = GetComponent<Positioned>();
+            var player = GameController.Instance.Player;
+            var distance = Math.Sqrt(Math.Pow(player.Pos.X - p.X, 2) + Math.Pow(player.Pos.Y - p.Y, 2));
+            return (int)distance;
         }
 
         public Dictionary<string, long> GetComponents()
