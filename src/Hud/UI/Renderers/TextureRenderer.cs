@@ -108,6 +108,30 @@ namespace PoeHUD.Hud.UI.Renderers
             DrawColoredVertices(PrimitiveType.TriangleStrip, 8, data);
         }
 
+        public void DrawImage(byte[] by, RectangleF rect, Color color, string name)
+        {
+
+            TexturedVertex[] data =
+            {
+                new TexturedVertex(rect.Left, rect.Top, 0, 0, color),
+                new TexturedVertex(rect.Right, rect.Top, 1, 0, color),
+                new TexturedVertex(rect.Right, rect.Bottom, 1, 1, color),
+                new TexturedVertex(rect.Left, rect.Bottom, 0, 1, color)
+            };
+            if (!textures.TryGetValue(name, out var baseTexture))
+            {
+                baseTexture = Texture.FromMemory(device, @by);
+                textures.Add(name, baseTexture);
+
+            }
+            textureCleaner[name] = 5000;
+            device.SetSamplerState(2, SamplerState.AddressU, TextureAddress.Wrap);
+            device.SetTexture(0, baseTexture);
+
+            DrawTexturedVertices(PrimitiveType.TriangleFan, 2, data);
+
+        }
+
         public void DrawImage(string fileName, TexturedVertex[] data, Color color, float repeatX)
         {
             device.SetTexture(0, GetTexture(fileName));

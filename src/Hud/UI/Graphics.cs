@@ -232,5 +232,19 @@ namespace PoeHUD.Hud.UI
                 Environment.Exit(0);
             }
         }
+
+        public void DrawImage(byte[] bytes, RectangleF rectangle, Color color, string name)
+        {
+
+            try
+            {
+                textureRenderer.DrawImage(bytes, rectangle, color, name);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show($"Failed to load texture from memory: {e.Message}");
+                Environment.Exit(0);
+            }
+        }
     }
 }
