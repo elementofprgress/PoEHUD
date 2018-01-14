@@ -62,7 +62,7 @@ namespace PoeHUD.Models
         {
             get
             {
-                var p = GetComponent<Positioned>();
+                var p = GetComponent<Render>();
                 var player = GameController.Instance.Player;
                 var distance = Math.Sqrt(Math.Pow(player.Pos.X - p.X, 2) + Math.Pow(player.Pos.Y - p.Y, 2));
                 return (int)distance;
