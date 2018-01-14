@@ -137,7 +137,7 @@ namespace PoeHUD.Hud.Menu
             MenuItem playersMenu = AddChild(healthMenu, "Players", healthBarPlugin.Players.Enable);
             MenuItem enemiesMenu = AddChild(healthMenu, "Enemies", healthBarPlugin.ShowEnemies);
             MenuItem minionsMenu = AddChild(healthMenu, "Minions", healthBarPlugin.Minions.Enable);
-            AddChild(healthMenu, "Show nrg shield", healthBarPlugin.ShowES);
+            AddChild(healthMenu, "Show energy shield", healthBarPlugin.ShowES);
             AddChild(healthMenu, "Show in town", healthBarPlugin.ShowInTown);
             MenuItem debuffPanelMenu = AddChild(healthMenu, "Show debuffs", healthBarPlugin.ShowDebuffPanel);
             AddChild(debuffPanelMenu, "Icon size", healthBarPlugin.DebuffPanelIconSize);
@@ -217,7 +217,7 @@ namespace PoeHUD.Hud.Menu
 
             // Item Alert
             MenuItem itemAlertMenu = AddChild(CoreMenu, "Item alert", settingsHub.ItemAlertSettings.Enable);
-            string[ ] itemAlertStaticMenuList = { "Alternative", "Item tooltips", "Play sound", "Show text", "Hide others", "Show border", "Dim Others" };
+            string[ ] itemAlertStaticMenuList = { "Custom Item Filter", "Item tooltips", "Play sound", "Show text", "Hide others", "Show border", "Dim Others" };
             MenuItem alternative = AddChild(itemAlertMenu, itemAlertStaticMenuList[0], settingsHub.ItemAlertSettings.Alternative, null, y => itemAlertStaticMenuList.All(x => x != (y as ToggleButton)?.Name));
             AddChild(alternative, settingsHub.ItemAlertSettings.FilePath);
             AddChild(alternative, "With border", settingsHub.ItemAlertSettings.WithBorder);
@@ -429,17 +429,17 @@ namespace PoeHUD.Hud.Menu
             AddChild(iconSizeMenu, "Magic Mob Icon", settingsHub.MonsterTrackerSettings.MagicMobIcon);
             AddChild(iconSizeMenu, "Rare Mob Icon", settingsHub.MonsterTrackerSettings.RareMobIcon);
             AddChild(iconSizeMenu, "Unique Mob Icon", settingsHub.MonsterTrackerSettings.UniqueMobIcon);
-            AddChild(iconSizeMenu, "Minions Icon", settingsHub.MonsterTrackerSettings.MinionsIcon);
-            AddChild(iconSizeMenu, "Masters Icon", settingsHub.PoiTrackerSettings.MastersIcon);
-            AddChild(iconSizeMenu, "Chests Icon", settingsHub.PoiTrackerSettings.ChestsIcon);
-            AddChild(iconSizeMenu, "Strongboxes Icon", settingsHub.PoiTrackerSettings.StrongboxesIcon);
-            AddChild(iconSizeMenu, "PerandusChest Icon", settingsHub.PoiTrackerSettings.PerandusChestIcon);
-            AddChild(iconSizeMenu, "BreachChest Icon", settingsHub.PoiTrackerSettings.BreachChestIcon);
+            AddChild(iconSizeMenu, "Minion Icon", settingsHub.MonsterTrackerSettings.MinionsIcon);
+            AddChild(iconSizeMenu, "Master Icon", settingsHub.PoiTrackerSettings.MastersIcon);
+            AddChild(iconSizeMenu, "Chest Icon", settingsHub.PoiTrackerSettings.ChestsIcon);
+            AddChild(iconSizeMenu, "Strongbox Icon", settingsHub.PoiTrackerSettings.StrongboxesIcon);
+            AddChild(iconSizeMenu, "Perandus Chest Icon", settingsHub.PoiTrackerSettings.PerandusChestIcon);
+            AddChild(iconSizeMenu, "Breach Chest Icon", settingsHub.PoiTrackerSettings.BreachChestIcon);
             MenuItem itemLootIcon = AddChild(iconSizeMenu, "Item loot Icon", settingsHub.ItemAlertSettings.LootIcon);
             AddChild(iconSizeMenu, "Use border color for loot icon", settingsHub.ItemAlertSettings.LootIconBorderColor); // Adding a ToggleNode as a RangeNode child doesn't display it
             AddChild(mapIconsMenu, "Minimap icons", settingsHub.MapIconsSettings.IconsOnMinimap);
             AddChild(mapIconsMenu, "Large map icons", settingsHub.MapIconsSettings.IconsOnLargeMap);
-            AddChild(mapIconsMenu, "Drop items", settingsHub.ItemAlertSettings.ShowItemOnMap);
+            AddChild(mapIconsMenu, "Dropped items", settingsHub.ItemAlertSettings.ShowItemOnMap);
             AddChild(mapIconsMenu, "Monsters", settingsHub.MonsterTrackerSettings.Monsters);
             AddChild(mapIconsMenu, "Minions", settingsHub.MonsterTrackerSettings.Minions);
             AddChild(mapIconsMenu, "Strongboxes", settingsHub.PoiTrackerSettings.Strongboxes);
@@ -456,7 +456,7 @@ namespace PoeHUD.Hud.Menu
             AddChild(menuSettings, "Background color", settingsHub.MenuSettings.BackgroundColor);
             AddChild(menuSettings, "Menu font size", settingsHub.MenuSettings.MenuFontSize);
             AddChild(menuSettings, "Title font size", settingsHub.MenuSettings.TitleFontSize);
-            AddChild(menuSettings, "Picker font size", settingsHub.MenuSettings.PickerFontSize);
+            AddChild(menuSettings, "Slider font size", settingsHub.MenuSettings.PickerFontSize);
             MenuItem performanceSettings = AddChild(CoreMenu, "Performance", settingsHub.PerformanceSettings.Enable);
             AddChild(performanceSettings, "FPS Render limit", settingsHub.PerformanceSettings.RenderLimit);
             AddChild(performanceSettings, "FPS Update entity limit", settingsHub.PerformanceSettings.UpdateEntityDataLimit);
