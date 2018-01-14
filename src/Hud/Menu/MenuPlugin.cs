@@ -423,23 +423,23 @@ namespace PoeHUD.Hud.Menu
             AddChild(showDpsMenu, "Clear", settingsHub.DpsMeterSettings.ClearNode);
 
             // Map icons
-            MenuItem mapIconsMenu = AddChild(CoreMenu, "Map icons", settingsHub.MapIconsSettings.Enable);
+            MenuItem mapIconsMenu = AddChild(CoreMenu, "Map Icons", settingsHub.MapIconsSettings.Enable);
             MenuItem iconSizeMenu = AddChild(mapIconsMenu, "Icon sizes", settingsHub.MonsterTrackerSettings.ShowText);
-            AddChild(iconSizeMenu, "White Mob Icon", settingsHub.MonsterTrackerSettings.WhiteMobIcon);
-            AddChild(iconSizeMenu, "Magic Mob Icon", settingsHub.MonsterTrackerSettings.MagicMobIcon);
-            AddChild(iconSizeMenu, "Rare Mob Icon", settingsHub.MonsterTrackerSettings.RareMobIcon);
-            AddChild(iconSizeMenu, "Unique Mob Icon", settingsHub.MonsterTrackerSettings.UniqueMobIcon);
-            AddChild(iconSizeMenu, "Minion Icon", settingsHub.MonsterTrackerSettings.MinionsIcon);
-            AddChild(iconSizeMenu, "Master Icon", settingsHub.PoiTrackerSettings.MastersIcon);
-            AddChild(iconSizeMenu, "Chest Icon", settingsHub.PoiTrackerSettings.ChestsIcon);
-            AddChild(iconSizeMenu, "Strongbox Icon", settingsHub.PoiTrackerSettings.StrongboxesIcon);
-            AddChild(iconSizeMenu, "Perandus Chest Icon", settingsHub.PoiTrackerSettings.PerandusChestIcon);
-            AddChild(iconSizeMenu, "Breach Chest Icon", settingsHub.PoiTrackerSettings.BreachChestIcon);
-            MenuItem itemLootIcon = AddChild(iconSizeMenu, "Item loot Icon", settingsHub.ItemAlertSettings.LootIcon);
+            AddChild(iconSizeMenu, "White Mob Icons", settingsHub.MonsterTrackerSettings.WhiteMobIcon);
+            AddChild(iconSizeMenu, "Magic Mob Icons", settingsHub.MonsterTrackerSettings.MagicMobIcon);
+            AddChild(iconSizeMenu, "Rare Mob Icons", settingsHub.MonsterTrackerSettings.RareMobIcon);
+            AddChild(iconSizeMenu, "Unique Mob Icons", settingsHub.MonsterTrackerSettings.UniqueMobIcon);
+            AddChild(iconSizeMenu, "Minion Icons", settingsHub.MonsterTrackerSettings.MinionsIcon);
+            AddChild(iconSizeMenu, "Master Icons", settingsHub.PoiTrackerSettings.MastersIcon);
+            AddChild(iconSizeMenu, "Chest Icons", settingsHub.PoiTrackerSettings.ChestsIcon);
+            AddChild(iconSizeMenu, "Strongbox Icons", settingsHub.PoiTrackerSettings.StrongboxesIcon);
+            AddChild(iconSizeMenu, "Perandus Chest Icons", settingsHub.PoiTrackerSettings.PerandusChestIcon);
+            AddChild(iconSizeMenu, "Breach Chest Icons", settingsHub.PoiTrackerSettings.BreachChestIcon);
+            MenuItem itemLootIcon = AddChild(iconSizeMenu, "Item loot Icons", settingsHub.ItemAlertSettings.LootIcon);
             AddChild(iconSizeMenu, "Use border color for loot icon", settingsHub.ItemAlertSettings.LootIconBorderColor); // Adding a ToggleNode as a RangeNode child doesn't display it
-            AddChild(mapIconsMenu, "Minimap icons", settingsHub.MapIconsSettings.IconsOnMinimap);
-            AddChild(mapIconsMenu, "Large map icons", settingsHub.MapIconsSettings.IconsOnLargeMap);
-            AddChild(mapIconsMenu, "Dropped items", settingsHub.ItemAlertSettings.ShowItemOnMap);
+            AddChild(mapIconsMenu, "Minimap Icons", settingsHub.MapIconsSettings.IconsOnMinimap);
+            AddChild(mapIconsMenu, "Large map Icons", settingsHub.MapIconsSettings.IconsOnLargeMap);
+            AddChild(mapIconsMenu, "Dropped Items", settingsHub.ItemAlertSettings.ShowItemOnMap);
             AddChild(mapIconsMenu, "Monsters", settingsHub.MonsterTrackerSettings.Monsters);
             AddChild(mapIconsMenu, "Minions", settingsHub.MonsterTrackerSettings.Minions);
             AddChild(mapIconsMenu, "Strongboxes", settingsHub.PoiTrackerSettings.Strongboxes);
