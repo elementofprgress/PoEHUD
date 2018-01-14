@@ -424,7 +424,7 @@ namespace PoeHUD.Hud.Menu
 
             // Map icons
             MenuItem mapIconsMenu = AddChild(CoreMenu, "Map Icons", settingsHub.MapIconsSettings.Enable);
-            MenuItem iconSizeMenu = AddChild(mapIconsMenu, "Icon sizes", settingsHub.MonsterTrackerSettings.ShowText);
+            MenuItem iconSizeMenu = AddChild(mapIconsMenu, "Icon Sizes", settingsHub.MonsterTrackerSettings.ShowText);
             AddChild(iconSizeMenu, "White Mob Icons", settingsHub.MonsterTrackerSettings.WhiteMobIcon);
             AddChild(iconSizeMenu, "Magic Mob Icons", settingsHub.MonsterTrackerSettings.MagicMobIcon);
             AddChild(iconSizeMenu, "Rare Mob Icons", settingsHub.MonsterTrackerSettings.RareMobIcon);
