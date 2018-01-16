@@ -48,6 +48,7 @@ namespace PoeHUD.Models
         public bool IsHostile => internalEntity.IsHostile;
         public long LongId { get; }
         public bool IsAlive => GetComponent<Life>().CurHP > 0;
+        public int DistanceFromPlayer => internalEntity.DistanceFromPlayer;
 
         public Vector3 Pos
         {
@@ -55,17 +56,6 @@ namespace PoeHUD.Models
             {
                 var p = GetComponent<Render>();
                 return new Vector3(p.X, p.Y, p.Z);
-            }
-        }
-
-        public int DistanceFromPlayer
-        {
-            get
-            {
-                var p = GetComponent<Render>();
-                var player = GameController.Instance.Player;
-                var distance = Math.Sqrt(Math.Pow(player.Pos.X - p.X, 2) + Math.Pow(player.Pos.Y - p.Y, 2));
-                return (int)distance;
             }
         }
 
