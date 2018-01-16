@@ -58,7 +58,7 @@ namespace PoeHUD.Models
             }
         }
 
-        public int Distance
+        public int DistanceFromPlayer
         {
             get
             {
