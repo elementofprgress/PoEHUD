@@ -1,4 +1,5 @@
-﻿using PoeHUD.Hud.Settings;
+﻿using System.Windows.Forms;
+using PoeHUD.Hud.Settings;
 using SharpDX;
 
 namespace PoeHUD.Hud.AdvancedTooltip
@@ -15,6 +16,8 @@ namespace PoeHUD.Hud.AdvancedTooltip
             T1Color = new ColorBGRA(255, 0, 255, 255);
             T2Color = new ColorBGRA(255, 255, 0, 255);
             T3Color = new ColorBGRA(0, 255, 0, 255);
+            ToggleModsOnHold = false;
+            ModKey = Keys.LControlKey;
         }
 
         public RangeNode<int> ModTextSize { get; set; }
@@ -24,5 +27,7 @@ namespace PoeHUD.Hud.AdvancedTooltip
         public ColorNode T1Color { get; set; }
         public ColorNode T2Color { get; set; }
         public ColorNode T3Color { get; set; }
+        public ToggleNode ToggleModsOnHold { get; set; }
+        public HotkeyNode ModKey { get; set; }
     }
 }

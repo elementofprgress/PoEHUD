@@ -234,6 +234,8 @@ namespace PoeHUD.Hud.Menu
             AddChild(itemModsMenu, "Tier 3 color", settingsHub.AdvancedTooltipSettings.ItemMods.T3Color);
             AddChild(itemModsMenu, "Suffix color", settingsHub.AdvancedTooltipSettings.ItemMods.SuffixColor);
             AddChild(itemModsMenu, "Prefix color", settingsHub.AdvancedTooltipSettings.ItemMods.PrefixColor);
+            MenuItem toggleModsMenu = AddChild(itemModsMenu, "Mods On Key Press", settingsHub.AdvancedTooltipSettings.ItemMods.ToggleModsOnHold);
+            MenuItem toggleModsKey = AddChild(toggleModsMenu, "Select Key", settingsHub.AdvancedTooltipSettings.ItemMods.ModKey);
             MenuItem weaponDpsMenu = AddChild(tooltipMenu, "Weapon Dps", settingsHub.AdvancedTooltipSettings.WeaponDps.Enable);
             MenuItem damageColors = AddChild(weaponDpsMenu, "Damage colors", settingsHub.AdvancedTooltipSettings.WeaponDps.Enable);
             AddChild(damageColors, "Cold damage", settingsHub.AdvancedTooltipSettings.WeaponDps.DmgColdColor);

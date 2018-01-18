@@ -51,6 +51,17 @@ namespace PoeHUD.Hud.AdvancedTooltip
                 {
                     holdKey = false;
                 }
+                if (Settings.ItemMods.ToggleModsOnHold)
+                {
+                    if (!WinApi.IsKeyDown(Settings.ItemMods.ModKey))
+                    {
+                        Settings.ItemMods.Enable = false;
+                    }
+                    else
+                    {
+                        Settings.ItemMods.Enable = true;
+                    }
+                }
                 Element uiHover = GameController.Game.IngameState.UIHover;
                 var inventoryItemIcon = uiHover.AsObject<HoverItemIcon>();
                 if (inventoryItemIcon == null)
