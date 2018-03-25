@@ -10,12 +10,12 @@ namespace PoeHUD.Models
     {
         private readonly GameController gameController;
         private readonly HashSet<string> ignoredEntities;
-        private Dictionary<long, EntityWrapper> entityCache;
+        private Dictionary<uint, EntityWrapper> entityCache;
 
         public EntityListWrapper(GameController gameController)
         {
             this.gameController = gameController;
-            entityCache = new Dictionary<long, EntityWrapper>();
+            entityCache = new Dictionary<uint, EntityWrapper>();
             ignoredEntities = new HashSet<string>();
             gameController.Area.OnAreaChange += OnAreaChanged;
         }
@@ -23,7 +23,7 @@ namespace PoeHUD.Models
         public ICollection<EntityWrapper> Entities => entityCache.Values;
 
         private EntityWrapper player;
-        public Dictionary<Enums.PlayerStats, int> PlayerStats { get; private set; } = new Dictionary<Enums.PlayerStats, int>();
+        public Dictionary<Enums.GameStat, int> PlayerStats { get; private set; } = new Dictionary<Enums.GameStat, int>();
         public EntityWrapper Player
         {
             get
@@ -65,14 +65,14 @@ namespace PoeHUD.Models
             if (gameController.Area.CurrentArea == null)
                 return;
 
-            Dictionary<int, Entity> newEntities = gameController.Game.IngameState.Data.EntityList.EntitiesAsDictionary;
-            var newCache = new Dictionary<long, EntityWrapper>();
+            Dictionary<uint, Entity> newEntities = gameController.Game.IngameState.Data.EntityList.EntitiesAsDictionary;
+            var newCache = new Dictionary<uint, EntityWrapper>();
             foreach (var keyEntity in newEntities)
             {
                 if (!keyEntity.Value.IsValid)
                     continue;
 
-                long entityID = keyEntity.Key;
+                var entityID = keyEntity.Key;
                 string uniqueEntityName = keyEntity.Value.Path + entityID;
 
                 if (ignoredEntities.Contains(uniqueEntityName))
@@ -114,20 +114,9 @@ namespace PoeHUD.Models
         private void UpdatePlayerStats()
         {
             var stats = player.GetComponent<Poe.Components.Stats>();
-            int key = 0;
-            int value = 0;
-            var bytes = gameController.Memory.ReadBytes(stats.statPtrStart, (int)(stats.statPtrEnd - stats.statPtrStart));
-            for (int i = 0; i < bytes.Length; i += 8)
-            {
-                key = BitConverter.ToInt32(bytes, i);
-                value = BitConverter.ToInt32(bytes, i + 0x04);
-                if (value != 0)
-                    PlayerStats[(Enums.PlayerStats)key] = value;
-                else if (PlayerStats.ContainsKey((Enums.PlayerStats)key))
-                    PlayerStats.Remove((Enums.PlayerStats)key);
-            }
+            PlayerStats = stats.StatDictionary;
         }
-        public EntityWrapper GetEntityById(long id)
+        public EntityWrapper GetEntityById(uint id)
         {
             EntityWrapper result;
             return entityCache.TryGetValue(id, out result) ? result : null;

@@ -2,12 +2,15 @@ using PoeHUD.Framework.Enums;
 using PoeHUD.Models;
 using PoeHUD.Poe;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using PoeHUD.Controllers;
+using System.Runtime.InteropServices;
 
 namespace PoeHUD.Framework
 {
@@ -125,6 +128,11 @@ namespace PoeHUD.Framework
             return BitConverter.ToUInt32(ReadMem(addr, 4), 0);
         }
 
+        public ushort ReadUShort(long addr)
+        {
+            return BitConverter.ToUInt16(ReadMem(addr, 2), 0);
+        }
+
 
         /// <summary>
         /// Read string as ASCII
@@ -178,6 +186,23 @@ namespace PoeHUD.Framework
             return ReadBytes(addr, 1).FirstOrDefault();
         }
 
+        public byte ReadByte(long addr, params long[] offsets)
+        {
+            //Simple for better then LINQ for often operation
+            long num = ReadLong(addr);
+            long result = num;
+            for (var index = 0; index < offsets.Length; index++)
+            {
+                var offset = offsets[index];
+
+                if(index < offsets.Length - 1)
+                    result = ReadLong(result + offset);
+                else
+                    result = ReadByte(result + offset);
+            }
+            return (byte)result;
+        }
+
         public byte[] ReadBytes(long addr, int length)
         {
             return ReadMem(addr, length);
@@ -198,6 +223,165 @@ namespace PoeHUD.Framework
             WinApi.ReadProcessMemory(procHandle, (IntPtr)addr, array);
             return array;
         }
+
+        //I hope in future all of this next shit will be replaced with GrayMagic:
+        public List<T> ReadStructsArray<T>(long startAddress, long endAddress, int structSize) where T : RemoteMemoryObject, new()
+        {
+            var result = new List<T>();
+            for (var address = startAddress; address < endAddress; address += structSize)
+                result.Add(GameController.Instance.Game.GetObject<T>(address));
+            return result;
+        }
+
+        public List<T> ReadClassesArray<T>(long startAddress, long endAddress, int structSize) where T : RemoteMemoryObject, new()
+        {
+            var result = new List<T>();
+            for (var address = startAddress; address < endAddress; address += structSize)
+                result.Add(GameController.Instance.Game.ReadObject<T>(address));
+            return result;
+        }
+
+        public List<long> ReadPointersArray(long startAddress, long endAddress, int offset = 8)
+        {
+            var result = new List<long>();
+            for (var address = startAddress; address < endAddress; address += offset)
+                result.Add(ReadLong(address));
+            return result;
+        }
+
+        public List<long> ReadSecondPointerArray_Count(long startAddress, int count)
+        {
+            var result = new List<long>();
+            startAddress += 8;//Skip first
+
+            for (int i = 0; i < count; i++)
+            {
+                result.Add(ReadLong(startAddress));
+                startAddress += 16;
+            }
+            return result;
+        }
+
+        public T IntptrToStruct<T>(long pointer, int structSize) where T : struct
+        {
+            var bytes = ReadBytes(pointer, structSize);
+            return IntptrToStruct<T>(bytes);
+        }
+
+        public T IntptrToStruct<T>(byte[] data) where T : struct
+        {
+            GCHandle gch = GCHandle.Alloc(data, GCHandleType.Pinned);
+            try
+            {
+                return (T)Marshal.PtrToStructure(gch.AddrOfPinnedObject(), typeof(T));
+            }
+            finally
+            {
+                gch.Free();
+            }
+        }
+
+        #region Special Structs reading
+
+        //Temporary for reading QustStates
+        //Hope some day this will be replaced with GrayMagic dll to read generic structs https://github.com/Konctantin/GreyMagic
+        public List<Tuple<long, int>> ReadDoublePointerIntList(long address) 
+        {
+            var list = new List<Tuple<long, int>>();
+            var head = ReadLong(address + 0x8);
+            ListDoublePointerIntNode node = ReadDoublePointerIntListNode(head);
+            list.Add(new Tuple<long, int>(node.Ptr2_Key, node.Value));
+
+            for (var ptr2 = node.NextPtr; ptr2 != head; ptr2 = node.NextPtr)
+            {
+                node = ReadDoublePointerIntListNode(ptr2);
+
+                list.Add(new Tuple<long, int>(node.Ptr2_Key, node.Value));
+            }
+            if (list.Count > 0)
+                list.RemoveAt(list.Count - 1);//bug fix, useless reading last element
+            return list;
+        }
+        private unsafe ListDoublePointerIntNode ReadDoublePointerIntListNode(long pointer)
+        {
+            int objSize = Marshal.SizeOf(typeof(ListDoublePointerIntNode));
+            var bytes = ReadBytes(pointer, objSize);
+
+            ListDoublePointerIntNode str;
+            fixed (byte* fixedBytes = &bytes[0])
+            {
+                str = *(ListDoublePointerIntNode*)fixedBytes;
+            }
+            return str;
+        }
+
+        //DoublePointer as key + intValue as value
+        public struct ListDoublePointerIntNode
+        {
+            public long PreviousPtr;
+            public long NextPtr;
+
+            //Double vector struct:
+            public long Ptr1_Unused;
+            public long Ptr2_Key;
+
+            public int Value;
+        }
+
+
+
+
+        /*
+        public Dictionary<TKey, TValue> ReadHashMap<TKey, TValue>(long pointer) where TKey : struct where TValue : struct
+        {
+            var result = new Dictionary<TKey, TValue>();
+
+            Stack<HashNode<TKey, TValue>> stack = new Stack<HashNode<TKey, TValue>>();
+            var startNode = IntptrToStruct<HashNode<TKey, TValue>>(pointer, 0x30);
+            var item = IntptrToStruct<HashNode<TKey, TValue>>(startNode.Root, 0x30);
+            stack.Push(item);
+
+            while (stack.Count != 0)
+            {
+                HashNode<TKey, TValue> node3 = stack.Pop();
+                if (node3.IsNull == 0)
+                    result.Add(node3.Key, node3.Value);
+
+                HashNode<TKey, TValue> node4 = IntptrToStruct<HashNode<TKey, TValue>>(node3.Previous, 0x30);
+                if (node4.IsNull == 0)
+                    stack.Push(node4);
+
+                HashNode<TKey, TValue> node5 = IntptrToStruct<HashNode<TKey, TValue>>(node3.Next, 0x30);
+                if (node5.IsNull == 0)
+                    stack.Push(node5);
+            }
+            return result;
+        }
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+        public struct HashNode<TNodeKey, TNodeValue> where TNodeKey : struct where TNodeValue : struct
+        {
+            public readonly long Previous;
+            public readonly long Root;
+            public readonly long Next;
+            public readonly byte Unknown;
+            public readonly byte IsNull;
+            private readonly byte byte_0;
+            private readonly byte byte_1;
+            public readonly TNodeKey Key;
+            public readonly TNodeValue Value;
+        }
+        */
+        /*
+        public unsafe T IntptrToStruct<T>(byte[] bytes) where T : struct
+        {
+            fixed (byte* ptr = bytes)
+            {
+                return *(T*)ptr;
+            }
+        }
+        */
+        #endregion
 
         public string DebugStr = "";
         public long[] FindPatterns(params Pattern[] patterns)
@@ -227,7 +411,6 @@ namespace PoeHUD.Framework
 
                 if(!found)
                 {
-                    //System.Windows.Forms.MessageBox.Show("Pattern " + iPattern + " is not found!");
                     DebugStr += "Pattern " + iPattern + " is not found!" + Environment.NewLine;
                 }
             });

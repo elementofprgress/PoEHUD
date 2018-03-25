@@ -1,7 +1,7 @@
 PoeHud
 ======
 
-Though it has been a while, people still have gotten banned from using this program, as It is against the TOS of Path of Exile.  Use at your own risk!
+Though it has been a while (happened in [Talisman](https://pathofexile.gamepedia.com/Talisman_league) league), people still have gotten banned from using this program, as It is against the TOS of Path of Exile.  Use at your own risk!
 
 Reads data from Path of Exile client application and displays it on transparent overlay, while you play PoE.
 Without writing to it so no map hack, disabling particles, zoom hack, fullbright.
@@ -60,6 +60,7 @@ git submodule update --init --recursive
 
 ### Requirements
 
+* Require Microsoft C++ Redistributable
 * .NET framerwork v.4.6 or newer (you already have it on Windows 8+)
 * Windows Vista or newer (XP won't work)
 * Path of Exile should be running in Windowed or Windowed Fullscreen mode (the pure Fullscreen mode does not let PoeHUD draw anything over the game window)

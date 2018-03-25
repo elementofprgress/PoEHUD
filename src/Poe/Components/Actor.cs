@@ -1,8 +1,13 @@
 using System.Collections.Generic;
+using System;
+using PoeHUD.Poe.RemoteMemoryObjects;
+using PoeHUD.Controllers;
+using PoeHUD.Models;
+using SharpDX;
 
 namespace PoeHUD.Poe.Components
 {
-    public class Actor : Component
+    public partial class Actor : Component
     {
         /// <summary>
         ///     Standing still = 2048 =bit 11 set
@@ -11,10 +16,11 @@ namespace PoeHUD.Poe.Components
         /// </summary>
         public int ActionId => Address != 0 ? M.ReadInt(Address + 0xD8) : 1;
 
-        public bool isMoving => (ActionId & 128) > 0;
+        public ActionFlags Action => Address != 0 ? (ActionFlags)M.ReadInt(Address + 0xD8) : ActionFlags.None;
+        public bool isMoving => Action == ActionFlags.Moving;
+        public bool isAttacking => Action == ActionFlags.UsingAbility;
 
-        public bool isAttacking => (ActionId & 2) > 0;
-
+        [Obsolete("Use DeployedObjects instead")]
         public List<int> Minions
         {
             get
@@ -54,6 +60,76 @@ namespace PoeHUD.Poe.Components
                 }
             }
             return false;
+        }
+
+
+        public float TimeSinseLastMove => -M.ReadFloat(Address + 0x110);
+        public float TimeSinseLastAction => -M.ReadFloat(Address + 0x114);
+
+        public ActionWrapper CurrentAction => Action == ActionFlags.UsingAbility ? ReadObject<ActionWrapper>(Address + 0x60) : null;
+
+        public List<DeployedObject> DeployedObjects
+        {
+            get
+            {
+                var result = new List<DeployedObject>();
+                var start = M.ReadLong(Address + 0x310);
+                var end = M.ReadLong(Address + 0x318);
+
+                for (var addr = start; addr < end; addr += 8)
+                {
+                    var objectId = M.ReadUInt(addr);
+                    var objectKey = M.ReadUShort(addr + 4);//in list of entities
+                    result.Add(new DeployedObject(objectId, objectKey));
+                }
+                return result;
+            }
+        }
+
+        public List<ActorSkill> ActorSkills
+        {
+            get
+            {
+                var skillsStartPointer = M.ReadLong(Address + 0x2c0);
+                var skillsEndPointer = M.ReadLong(Address + 0x2c8);
+                skillsStartPointer += 8;//Don't ask me why. Just skipping first one
+
+                var result = new List<ActorSkill>();
+                for (var addr = skillsStartPointer; addr < skillsEndPointer; addr += 16)//16 because we are reading each second pointer (pointer vectors)
+                {
+                    result.Add(ReadObject<ActorSkill>(addr));
+                }
+                return result;
+            }
+        }
+
+
+        public class ActionWrapper : RemoteMemoryObject
+        {
+            public float DestinationX => M.ReadFloat(Address + 0x84);
+            public float DestinationY => M.ReadFloat(Address + 0x88);
+
+            public Vector2 CastDestination => new Vector2(DestinationX, DestinationY);
+
+            public ActorSkill Skill => ReadObject<ActorSkill>(Address + 0x18);
+
+        }
+
+
+        [Flags]
+        public enum ActionFlags
+        {
+            None = 0,
+            UsingAbility = 2,
+
+            //Actor is currently playing the "attack" animation, and therefor locked in a cooldown before any other action.
+            AbilityCooldownActive = 16,
+            Dead = 64,
+            Moving = 128,
+
+            /// actor is in the washed up state and false otherwise.
+            WashedUpState = 256,
+            LocalPlayer = 2048
         }
     }
 }

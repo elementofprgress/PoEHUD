@@ -6,8 +6,8 @@ namespace PoeHUD.Poe.RemoteMemoryObjects
 {
     public class Inventory : RemoteMemoryObject
     {
-        public long ItemCount => M.ReadLong(Address + 0x410, 0x630, 0x50);
-        public long TotalBoxesInInventoryRow => M.ReadInt(Address + 0x410, 0x630, 0x0C);
+        public long ItemCount => M.ReadLong(Address + 0x410, 0x638, 0x50);//This one is correct
+        public long TotalBoxesInInventoryRow => M.ReadInt(Address + 0x410, 0x638, 0x0C);
 
         private InventoryType GetInvType()
         {
@@ -25,6 +25,8 @@ namespace PoeHUD.Poe.RemoteMemoryObjects
                     return InventoryType.EssenceStash;
                 case 0x36:
                     return InventoryType.CurrencyStash;
+                case 0x1C:
+                    return InventoryType.FragmentStash;
                 case 0x05:
                     if (this.AsObject<Element>().Parent.Children[0].ChildCount == 9)
                         return InventoryType.MapStash;
@@ -52,6 +54,7 @@ namespace PoeHUD.Poe.RemoteMemoryObjects
                     return this.AsObject<Element>();
                 case InventoryType.CurrencyStash:
                 case InventoryType.EssenceStash:
+                case InventoryType.FragmentStash:
                     return this.AsObject<Element>().Parent;
                 case InventoryType.DivinationStash:
                     return GetObject<Element>(M.ReadLong(Address + Element.OffsetBuffers + 0x24, 0x08));
@@ -99,6 +102,13 @@ namespace PoeHUD.Poe.RemoteMemoryObjects
                                 list.Add(item.Children[0].AsObject<EssenceInventoryItem>());
                         }
                         break;
+                    case InventoryType.FragmentStash:
+                        foreach (var item in InvRoot.Children)
+                        {
+                            if (item.ChildCount > 0)
+                                list.Add(item.Children[0].AsObject<FragmentInventoryItem>());
+                        }
+                        break;
                     case InventoryType.DivinationStash:
                         foreach (var item in InvRoot.Children)
                         {
@@ -142,7 +152,7 @@ namespace PoeHUD.Poe.RemoteMemoryObjects
         {
             get
             {
-                long invAddr = M.ReadLong(Address + 0x410, 0x630, 0x30);
+                long invAddr = M.ReadLong(Address + 0x410, 0x638, 0x30);
                 y = y * xLength;
                 long itmAddr = M.ReadLong(invAddr + ((x + y) * 8));
                 if (itmAddr <= 0)
