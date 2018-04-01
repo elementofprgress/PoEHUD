@@ -179,6 +179,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\FsController.cs" />
+    <Compile Include="Controllers\GameStateController.cs" />
     <Compile Include="Framework\Aero.cs" />
     <Compile Include="Framework\ChooseColor.cs" />
     <Compile Include="Framework\Coroutine.cs" />
@@ -235,6 +236,7 @@
     <Compile Include="Hud\Settings\HotkeyNode.cs" />
     <Compile Include="Hud\Settings\ListNode.cs" />
     <Compile Include="Hud\Settings\StashTabNode.cs" />
+    <Compile Include="Hud\Settings\TextNode.cs" />
     <Compile Include="Hud\SizedPlugin.cs" />
     <Compile Include="Hud\SizedPluginWithMapIcons.cs" />
     <Compile Include="Hud\UI\Vertexes\GuiVertex.cs" />
