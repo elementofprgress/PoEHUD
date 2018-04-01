@@ -76,7 +76,14 @@ namespace PoeHUD.Hud.Menu
             return item;
         }
 
+<<<<<<< HEAD
         public static MenuItem AddChild(MenuItem parent, string text)
+=======
+
+
+        #region KeyboardMouseHandler
+        private void KeyboardMouseEvents_KeyPress(object sender, KeyPressEventArgs e)
+>>>>>>> refs/remotes/TehCheat/x64
         {
             SimpleMenu item = new SimpleMenu(parent, text);
             parent.AddChild(item);
@@ -89,12 +96,57 @@ namespace PoeHUD.Hud.Menu
             parent.AddChild(item);
         }
 
+<<<<<<< HEAD
         public static MenuItem AddChild(MenuItem parent, string text, ColorNode node)
         {
             ColorButton item = new ColorButton(text, node);
             parent.AddChild(item);
             return item;
         }
+=======
+        public static bool HandleForKeySelector = false;
+        public static Keys HandledForKeySelectorKey;
+        private void KeyboardMouseEvents_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (isPoeGameVisible)
+            {
+                if (HandleForKeySelector)
+                {
+                    HandledForKeySelectorKey = e.KeyCode;
+                    e.Handled = true;
+                    HandleForKeySelector = false;
+                    return;
+                }
+
+                if (e.KeyCode == Settings.MainMenuKeyToggle)
+                {
+                    Settings.Enable.Value = !Settings.Enable.Value;
+                    SettingsHub.Save(settingsHub);
+                    e.Handled = true;
+                }
+                if(Settings.Enable.Value)
+                {
+                    if (Settings.CloseOnEsc.Value && e.KeyCode == Keys.Escape)
+                    {
+                        Settings.Enable.Value = !Settings.Enable.Value;
+                        e.Handled = true;
+                        return;
+                    }
+                    if (Settings.CloseOnSpace.Value && e.KeyCode == Keys.Space)
+                    {
+                        Settings.Enable.Value = !Settings.Enable.Value;
+                        e.Handled = true;
+                        return;
+                    }
+                }
+            }
+
+            var io = ImGui.GetIO();
+            io.CtrlPressed = e.Control || e.KeyCode == Keys.LControlKey || e.KeyCode == Keys.RControlKey;
+            // Don't know why but Alt is LMenu/RMenu
+            io.AltPressed = e.Alt || e.KeyCode == Keys.LMenu || e.KeyCode == Keys.RMenu;
+            io.ShiftPressed = e.Shift || e.KeyCode == Keys.LShiftKey || e.KeyCode == Keys.RShiftKey;
+>>>>>>> refs/remotes/TehCheat/x64
 
         public static MenuItem AddChild<T>(MenuItem parent, string text, RangeNode<T> node) where T : struct
         {
@@ -103,11 +155,27 @@ namespace PoeHUD.Hud.Menu
             return item;
         }
 
+<<<<<<< HEAD
         public static MenuItem AddChild(MenuItem parent, string text, HotkeyNode node)
         {
             HotkeyButton item = new HotkeyButton(text, node);
             parent.AddChild(item);
             return item;
+=======
+            unsafe
+            {
+                if (ImGuiWantTextInput(io))
+                {
+               
+                    io.KeysDown[e.KeyValue] = true;
+                    if(e.KeyCode != Keys.Capital &&
+                        e.KeyCode != Keys.LShiftKey && e.KeyCode != Keys.RShiftKey &&
+                        e.KeyCode != Keys.LControlKey && e.KeyCode != Keys.RControlKey &&
+                        e.KeyCode != Keys.LWin && e.KeyCode != Keys.Apps)
+                        e.Handled = true;
+                }
+            }
+>>>>>>> refs/remotes/TehCheat/x64
         }
 
         public static MenuItem AddChild(MenuItem parent, string text, ButtonNode node)
